@@ -1,7 +1,7 @@
 # Important_Android_
 안드로이드를 배우면서 중요한 것들을 공유하는 레포지트리입니다.
 
-- 1. Android에서 Mysql을 쓰면 안되는 이유.
+: speech_balloon : Android에서 Mysql을 쓰면 안되는 이유.
 
 I would very explicitly NOT develop a MySQL App on the Android. 
 
@@ -79,10 +79,12 @@ The same arguments actually apply to ANY client-side use of MySQL, it's just tha
 
 MySQL 을 사용하는 어떠한 클라이언트 라도 동일한 논쟁이 발생합니다. 단지 모바일 플랫폼 상에서는 더욱 강력하게 발생할 뿐이죠.
 
-출처: https://ggoreb.tistory.com/110?category=381975 [나는 초보다]
 
 
-- 2. 추가 예정.
+: speech_balloon :  서비스 구현 시 알아둬야 하는 것.
+
+1. 죽지않게!
+2. 버그 없게!
 
 
 

@@ -101,8 +101,10 @@ Model은 사용하려는 데이터를 가지고 있는 비시각적 클래스입
 
 위 그림을 보면 알 수 있듯이 ViewModel은 Model은 알지만 View를 모르고 View는 Model을 모르지만 ViewModel을 알 수 있습니다.
 
+![mvvm (1)](https://user-images.githubusercontent.com/66651059/85481589-101e5c80-b5fd-11ea-86b4-0d6925dd6106.png)
+[ MVVM, 그림 1 ]
 
-
-
+![mvc](https://user-images.githubusercontent.com/66651059/85481593-10b6f300-b5fd-11ea-837c-a179263bc77d.png)
+[ MVC, 그림 2 ]
 
 

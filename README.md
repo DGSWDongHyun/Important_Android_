@@ -99,8 +99,7 @@ Model은 사용하려는 데이터를 가지고 있는 비시각적 클래스입
 
 ![mvvm](https://user-images.githubusercontent.com/66651059/85481270-7656af80-b5fc-11ea-964a-3b3d3b9fc7f3.png)
 
-위 그림을 보면 알 수 있듯이 ViewModel은 Model은 알지만 View를 모르고 View는 Model을 모르지만 ViewModel을 알 수 있습니다. 이제 AAC JetPack을 사용하여 보다 쉽게 MVVM 패턴을 프로젝트에 적용해보도록 하겠습니다.
-
+위 그림을 보면 알 수 있듯이 ViewModel은 Model은 알지만 View를 모르고 View는 Model을 모르지만 ViewModel을 알 수 있습니다.
 
 
 

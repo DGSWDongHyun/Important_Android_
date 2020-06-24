@@ -101,10 +101,18 @@ Model은 사용하려는 데이터를 가지고 있는 비시각적 클래스입
 
 위 그림을 보면 알 수 있듯이 ViewModel은 Model은 알지만 View를 모르고 View는 Model을 모르지만 ViewModel을 알 수 있습니다.
 
+# MVVM과 MVC 디자인 패턴의 차이점 🧐
+
 ![mvvm (1)](https://user-images.githubusercontent.com/66651059/85481589-101e5c80-b5fd-11ea-86b4-0d6925dd6106.png)
 [ MVVM, 그림 1 ]
 
 ![mvc](https://user-images.githubusercontent.com/66651059/85481593-10b6f300-b5fd-11ea-837c-a179263bc77d.png)
 [ MVC, 그림 2 ]
+
+MVC는 컨트롤러가 뷰와 모델을 둘 다 처리하기 때문에 상대적으로 MVVM에 비해 유지보수와 관련된 보수들이 많이 떨어집니다.
+반면에 MVVM은 뷰, 뷰 모델, 모델을 통하여 ViewModel과 Model이 서로 상호작용하며, View가 ViewModel에게 관련 작업을 요청하는 디자인 패턴입니다. 
+그리고 Model과 View는 서로를 모르기 때문에 유지보수에 훨씬 더 간편해짐을 강조하고 있습니다.
+
+
 
 

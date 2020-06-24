@@ -1,7 +1,7 @@
 # Important_Android_
 안드로이드를 배우면서 중요한 것들을 공유하는 레포지트리입니다.
 
-: speech_balloon : Android에서 Mysql을 쓰면 안되는 이유.
+💬 Android에서 Mysql을 쓰면 안되는 이유.
 
 I would very explicitly NOT develop a MySQL App on the Android. 
 
@@ -81,10 +81,23 @@ MySQL 을 사용하는 어떠한 클라이언트 라도 동일한 논쟁이 발�
 
 
 
-: speech_balloon :  서비스 구현 시 알아둬야 하는 것.
+💬 MVVM의 기본 정의 알아두기 
 
-1. 죽지않게!
-2. 버그 없게!
+🧐 What is MVVM?
+먼저 MVVM 패턴은 무엇인지에 대해 알아보겠습니다. MVVM 패턴은 1990년대 마틴 파울러에 의해 나온 MVP 패턴에서 파생된 패턴입니다. MVVM(Model-View-ViewModel) 패턴은 비즈니스 및 프레젠테이션 로직을 UI와 완전히 분리하는데 도움이 되며 비즈니스 로직과 UI를 명확하게 분리하여 더 쉽게 테스트 할 수 있고 유지 보수에 용이합니다. View, ViewModel, Model에 대해 각각 알아보겠습니다.
+
+# View
+
+View는 화면에 보이는 레이아웃 구조를 담당합니다. 또한 UI와 관련된 로직을 수행할 수 있습니다.
+
+# ViewModel
+
+ViewModel은 View에 연결된 데이터와 명령을 구현하고 변경 알림 이벤트를 통해 상태의 변경을 View에 알립니다. 그리고 상태 변경 알림을 받은 View는 변경을 적용할지 말지를 결정하게 됩니다. 여기서 말하는 ViewModel과 AAC(Android Architecture Component)의 ViewModel은 다릅니다. AAC에서의 ViewModel은 화면 회전같은 변화에서 View에 사용되는 데이터를 유지시키기 위한, Lifecycle을 알고있는 클래스입니다. 안드로이드 개발을 하면서 MVVM 패턴을 사용하려고 한다면, 반드시 AAC의 ViewModel을 사용하지 않아도 구현은 가능합니다.
+
+# Model
+
+Model은 사용하려는 데이터를 가지고 있는 비시각적 클래스입니다. 예를 들어 DTO(Data Transfer Object), POJO(Plain Old Java Object)나 엔티티 개체 등이 있습니다. 일반적으로 데이터를 액세스하거나 캐싱이 필요한 서비스 또는 리포지토리와 함께 사용됩니다.
+
 
 
 

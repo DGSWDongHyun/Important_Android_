@@ -126,6 +126,13 @@ MVC는 컨트롤러가 뷰와 모델을 둘 다 처리하기 때문에 상대적
 그 방법중 하나인 Clean Architecture에 대하여 알아보도록 하겠습니다.
 
 # CleanArchitecture 알아보기.
+![다운로드(1)](https://user-images.githubusercontent.com/66651059/86120852-ffe01300-bb0f-11ea-8241-9f73333031cb.jpg)
+
+[ 클린 아키텍쳐의 구성 ]
+
+Robert Martin이 소개한 CleanArchitecture 다이어그램입니다.
+양파모양의 4개의 Layer가 존재합니다. 가장 바깥쪽의 Frameworks & Drivers 가 사용자와 접점에 있는 Presentation이고,
+가장 안쪽의 Entities가 사용자가 실제로 생각하는 개념의 단위입니다. Clean Architecture는 서버쪽 내용이지만 안드로이드에서도 이 개념을 적용시켜, UI를 독립시키고 데이터베이스를 분리시키고, 외부적인 설정에 독립적인 구조를 적용하여 프레임워크에 의존적이지않은 독립적인 코드를 짤 수 있습니다.
 
 
 

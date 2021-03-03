@@ -203,16 +203,21 @@ xml -> provider.xml
 
 # About Coroutine .. 🧐
 
+android 11에서 AsyncTask가 공식적으로 deprecated됨에 따라, 코루틴을 구글 공식문서에서 추천 중입니다. AsyncTask는 주로 비동기작업과 UI와 상호작용을 하기위한 용도로 이용되어왔는데,
+android 11부터는 더 이상 쓸 수 없어졌습니다. 바로 예제로 확인해보겠습니다.
+
 ### Coroutine 기본 이용 방법
 
 ```
   GlobalScope.launch { // 기존 쓰레드
-     withContext(Dispatchers.Main) { // 메인 쓰레드
+     withContext(Dispatchers.Main) { // 메인 쓰레드 UI 작업
 
      }
      // 기존 쓰레드
      withContext(Dispatchers.IO) { // IO 처리 쓰레드 ( 비동기 작업에 많이 이용됨. )
-
+       async { //네트워크 작업때 필수 ( UI 작업 X )
+       
+       }
      }
      //기존 쓰레드
   }

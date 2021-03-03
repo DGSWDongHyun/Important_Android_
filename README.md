@@ -73,6 +73,13 @@ ViewModel
 ```
 Activity 
 
+# + Tip.. Observer
+
+옵저버는 list로 감싼 LiveData의 최신화 즉, observe를 할 수 없다. 때문에 list의 add, remove의 작업을 처리해도 실시간으로 ui 처리가 안된다. 이럴때에 해결 방안은 
+list 딴에서 add, remove 메소드를 처리하고, list자체를 setValue 혹은 postValue를 해주는 방법이다.
+
+MVVM에서 , observer를 이용할때 참고하길 바란다.
+
 
 # What is CleanArchitecture? 🧐
 

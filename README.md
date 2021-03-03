@@ -199,6 +199,135 @@ Mvp 구조를 사용한다면 presenter가 생성되는 시점에 유스 케이�
 
 이처럼 작성하게 될 시에 테스트하기에 좀더 편리하게 됩니다.
 
+# AboutKotlin
+
+실습을 통해 얻은 코틀린 지식 / 여러 안드로이드 팁을 공유하는 곳입니다.
+
+# About ViewBinding 
+ 
+ 뷰 바인딩은 데이터 바인딩과 다르게 뷰 결합을 해주는 뷰이다. 굳이 따지자면 데이터 바인딩이 뷰 바인딩의 상위호환이다. ( 뷰 바인딩의 지원 기능을 포함하니까 .. )
+ 
+```
+ viewBinding {
+    enabled = true
+ }
+```
+  app 단위의 gradle 파일에 viewBinding 허용
+
+```
+ private lateinit var bindingExample : ActivityExampleBinding // 초기화 지연
+ 
+ bindingExample = ActivityExampleBinding.inflate(layoutInflater) // viewBinding 세팅
+ setContentView(bindingExample.root) // 해당 binding의 최상위 부모를 contentView로 
+```
+ Activity
+ 
+ ```
+  private lateinit var bindingExample : FragmentExampleBinding // 초기화 지연 
+  bindingExample = FragmentExampleBinding.inflate(layoutInflater)
+  
+  return bindingExample.root
+ ```
+  Fragment ->  onCreate 메소드내에서 작성
+
+# About Widget
+
+위젯은 supportLibrary를 지원하지 않는다. 따라서 CardView, RecyclerView와 같이 태생이 supportLibrary인 뷰들은 예외처리된다. ( ... )
+위젯 업데이트 주기는 xml 폴더 내에 widget 업데이트 주기 설정이 가능하다. ( 다만, 너무 많은 작업을 1초마다 실행시켰을때에 OOM이 발생할수도 .. )
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider
+    android:initialLayout="@layout/example_init" // inital xml 
+    android:minWidth="180dp" // 최소 크기
+    android:minHeight="60dp" // 최소 크기 ( 3:1 비율 )
+    android:updatePeriodMillis="86400000" // 업데이트 주기
+    android:resizeMode="horizontal|vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
+```
+xml -> provider.xml
+
+# About MVVM with DataBinding
+
+MVVM은 디자인패턴이다. 말 그대로 , Model View ViewModel로 나누어서 사용하는 디자인패턴인데, Model에서는 기본적으로 data class 혹은 enum과 같은 데이터 가공 용도로 기틀을 잡아두는 것이고,
+View는 ViewModel의 값의 변화에 따라서, 동적으로 업데이트 해주는 역할을 하고, ViewModel에서는 Model에서의 데이터를 이용해서, CRUD와 같은 작업을 수행한다. 
+
+위와 같은 이유로 ViewModel은 Model과 상호작용하고, View와 Model은 서로 알지 못한다. 또한 View와 ViewModel이 서로 상호작용, View - ViewModel - Model 처럼 다리 역할을 해준다. 
+기존에 MVC 패턴과의 차이점은 Controller에서 무겁거나 하드한 작업을 처리함으로써, 유지보수에도 어렵고, Controller에 부담감이 많았는데 해당 디자인패턴을 이용하면서, 유지보수에도 편하고, 무리가 덜가는 서비스가 구현이 가능하다.
+
+```
+class MainViewModel(application: Application) : AndroidViewModel(application) {
+    var liveData = MutableLiveData<String>()
+    
+    init { 
+      liveData.value = "hello"
+    }
+}
+```
+ViewModel
+```
+  private lateinit var exampleBinding : ActivityExampleBinding // 초기화 지연
+  
+  exampleBinding.viewModel = MainViewModel(application) // AndroidViewModel(application) 단일 클래스 extends
+  exampleBinding.viewModel.liveData.observe(this, t -> { 
+    // UI 변경
+  }) // observe를 통한 실시간 값 변경시, 메소드 실행 
+ 
+
+```
+Activity 
+
+# About Coroutine
+
+### Coroutine 기본 이용 방법
+
+```
+  GlobalScope.launch { // 기존 쓰레드
+     withContext(Dispatchers.Main) { // 메인 쓰레드
+
+     }
+     // 기존 쓰레드
+     withContext(Dispatchers.IO) { // IO 처리 쓰레드 ( 비동기 작업에 많이 이용됨. )
+
+     }
+     //기존 쓰레드
+  }
+```  
+
+### funcA 메소드 호출 이후 funcB 메소드 호출 
+
+```
+  suspend fun initMembers() { // suspendCoroutine을 처리하기 위한 메소드 suspend 추가
+        withContext(Dispatchers.Main) { // 메인 쓰레드
+            membersNum.value = suspendCoroutine { // 서스펜드 코루틴 진입 
+               CodeObject.getReference.child("example").addValueEventListener(object : ValueEventListener { // realtime db를 통한 valueEventListener
+                   override fun onDataChange(snapshot: DataSnapshot) {
+                       example.value = snapshot.value.toString() // 값 라이브데이터에 넣기
+                       if(isActive) { // 여전히 실행중이라면,
+                           it.resume(snapshot.value.toString()) // 값이 올때까지 수신 대기
+                       }
+                   }
+
+                   override fun onCancelled(error: DatabaseError) {
+                      Log.d("Crashed", error.message)
+                   }
+
+               })
+            }
+        }
+    }
+```    
+ViewModel
+```
+     CoroutineScope(Dispatchers.IO).launch { // 해당 메소드는 비동기 작업이므로 코루틴스코프에 IO 처리 , 메인쓰레드 할당 X
+            binding.mainViewModel?.initMembers() // funcA 실행
+            withContext(Dispatchers.Main){ // 메인 쓰레드 진입
+                binding?.mainViewModel?.increaseMembers() // funcB 실행
+            }
+        }
+```        
+Activity with DataBinding
+
 
 
 

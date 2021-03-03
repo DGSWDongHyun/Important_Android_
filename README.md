@@ -34,27 +34,42 @@ MVC는 컨트롤러가 뷰와 모델을 둘 다 처리하기 때문에 상대적
 반면에 MVVM은 뷰, 뷰 모델, 모델을 통하여 ViewModel과 Model이 서로 상호작용하며, View가 ViewModel에게 관련 작업을 요청하는 디자인 패턴입니다. 
 그리고 Model과 View는 서로를 모르기 때문에 유지보수가 훨씬 더 쉬움을 강조하고 있습니다.
 
-# 예제
+# 예제 (MVVM, Databinding)
 
+```
+ data class Model(var name : String?= null, var age : Int?= null)
+```
+Model
 ```
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     var liveData = MutableLiveData<String>()
+    var dataModelList = MutableLiveData<ArrayList<Model>>()
     
     init { 
       liveData.value = "hello"
+      addDummy()
+    }
+    
+    fun addDummy() {
+        for(index in 1..10) {
+            dataModelList.value.add(Model("name${index}, age${index}"))
+        }
     }
 }
 ```
 ViewModel
 ```
   private lateinit var exampleBinding : ActivityExampleBinding // 초기화 지연
+  var arrayList = ArrayList<Model>()
+  
+  exampleBinding = DataBindingUtil.setContentView(this, R.layout.main_example)
   
   exampleBinding.viewModel = MainViewModel(application) // AndroidViewModel(application) 단일 클래스 extends
   exampleBinding.viewModel.liveData.observe(this, t -> { 
     // UI 변경
   }) // observe를 통한 실시간 값 변경시, 메소드 실행 
- 
-
+  
+  Log.d("TAG", "${exampleBinding.viewModel.dataModelList}")
 ```
 Activity 
 

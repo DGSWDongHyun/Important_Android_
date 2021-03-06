@@ -264,17 +264,18 @@ ViewModel
 ```        
 Activity with DataBinding
 
-### 메소드 내에서 반환 작업 완료까지 기다리기 ( Coroutine )
+### 메소드 내에서 반환 작업 완료까지 기다리기 ( Coroutine ) , 2021. 03. 06 수정
 
 각각 다를 수 있으니 참고용도로만 이용하길 바란다 필자는 이것이 최적의 방법이었다.. ( 맨땅에 헤딩하면서 코틀린 문서는 다 뒤져보았다.. )
+++ 딜레이까지 줘가며 결국 방도를 알아내었다.
 
 ```
 class FirebaseDataBaseModule {
     companion object{
-            val jobGetRoom : Deferred<ArrayList<RoomData>> = CoroutineScope(Dispatchers.IO).async{ // async 설정
-                val dataRoomList = ArrayList<RoomData>()
+            val jobGetRoom : Deferred<ArrayList<RoomData>> = CoroutineScope(Dispatchers.Default).async{ // Deferred<T>, T값을 반환하는 메서드.
+                val dataRoomList = ArrayList<RoomData>() // 결과 값을 반환할 임의의 RoomData 객체를 담고 있는 ArrayList 생성
 
-                val getRoomSentence : Job = GlobalScope.async { // Job으로 작업 수행
+                val getRoomSentence : Job = GlobalScope.async { // 네트워크 통신이므로 비동기 처리
                     FirebaseDatabase.getInstance().reference.child("roomData").addChildEventListener(object : ChildEventListener {
                         override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                             val roomData = snapshot.getValue(RoomData::class.java)
@@ -298,28 +299,41 @@ class FirebaseDataBaseModule {
                             TODO("Not yet implemented")
                         }
 
-                    })
+                    }) // firebase 작업 처리
                 }
 
-                getRoomSentence.join() // 완료까지 기다리기 요청
+                getRoomSentence.join() // join(), await(), 둘 다 비슷한 의미이지만 필자는 join 이용을 통해 씀.
 
-                dataRoomList // Deferred<T> 안에 T를 반환한다, 따라서 T에 값을 넣어준 것에 대해 반환 값을 넣는다.
+                dataRoomList // 값 반환
             }
         }
 }
 ```
 Example Module
 ```
-  CoroutineScope(Dispatchers.Default).async { // async
-            val jobCompleted = FirebaseDataBaseModule.jobGetRoom.await() // 작업 끝날때까지 데이터 셋팅 금지!
-            roomAdapter.setData(jobCompleted)// 데이터 셋
+   private suspend fun getJobComplete() { // withContext를 활용하기 위한 suspend 예약자 사용 , coroutineScope 내부의 블록을 이용할 때에는 예약자를 선언해야함.
+            val jobCompleted = FirebaseDataBaseModule.jobGetRoom // 모듈에서 해당 메서드 호출
+            val jobCompletedList = jobCompleted.await() // 그 값을 기다림.
 
-            Log.d("TAG_", jobCompleted.toString()) // 로그로 한번 출력
-        }
+            withContext(Dispatchers.Main) { // Main : 메인 쓰레드 UI 작업, IO : 비동기 처리 작업, Default : 크기가 크거나 복잡한 연산 처리.
+                mainBinding.loadingView.startAnimation(AnimationUtils.loadAnimation(applicationContext, R.anim.slowly_visible))
+                mainBinding.loadingView.visibility = View.VISIBLE
+            }
+
+            delay(2000) // 대기 시간 ( UI 멈춤 )
+
+            if(jobCompleted.isCompleted) { // 만약 해당 Task가 완료됬다면,
+                withContext(Dispatchers.Main) {
+                    mainBinding.loadingView.startAnimation(AnimationUtils.loadAnimation(applicationContext, R.anim.slowly_gone))
+                    mainBinding.loadingView.visibility = View.GONE
+
+                    viewModel.roomDataLiveList.value = jobCompletedList // UI 작업 마무리 후, ViewModel로 넘겨줌 .
+                }
+            }
+            Log.d("TAG_", "inCage : ${jobCompleted.isActive} , ${jobCompleted.isCompleted} , ${jobCompleted.isCancelled}") // 마지막으로 현재 진행상황 임시 테스트 로그
+    }
 ```
 Activity
-
-여전히 잡버그는 존재한다 수정을 다시 해봐야겠다. 
 
 
 
